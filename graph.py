@@ -63,8 +63,12 @@ class PredefinedGraph(Graph):
         self.nodes_dict = nodes_dict
 
     def is_obstacle(self, node):
-        # -1 weights represent obstacles
-        return nodes[node] == -1
+        if node in self.nodes_dict:
+            # -1 weights represent obstacles
+            return self.nodes_dict[node] == -1
+        return False
 
-    def cost_to(self, from_node, to_node):
-        return nodes[node]
+    def cost_to(self, node):
+        if node not in self.nodes_dict:
+            return 1
+        return self.nodes_dict[node]

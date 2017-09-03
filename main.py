@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
 
 import graph as gh
+import os
 
 from heapq import *
 from math import inf
-from sys import argv
+from sys import argv, exit
 from time import time
 
 def a_star_search(start, goal, graph):
@@ -27,7 +28,7 @@ def a_star_search(start, goal, graph):
             return came_from
 
         for neighbor in graph.neighbors(current):
-            new_cost = cost[current] + graph.cost_to(current, neighbor) 
+            new_cost = cost[current] + graph.cost_to(neighbor) 
 
             if new_cost < cost.get(neighbor, inf) and not graph.is_obstacle(neighbor):
                 cost[neighbor] = new_cost
@@ -48,31 +49,69 @@ def reconstruct_path(start, goal, came_from):
 def print_graph(path, graph):
     GREEN = '\033[38;5;82m'
     RED = '\033[38;5;196m'
+    YELLOW = '\033[38;5;226m'
     RESET = '\033[0m'
 
     for y in range(graph.height):
         for x in range(graph.width):
             node = (x, y)
 
-            if graph.is_obstacle(node): c = RED + '= ' + RESET
-            elif node in path: c = GREEN + '# ' + RESET
-            else: c = '. '
+            if graph.is_obstacle(node):
+                c = RED + '=' + RESET
+            elif graph.cost_to(node) != 1:
+                c = YELLOW + str(graph.cost_to(node)) + RESET
+            elif node in path:
+                c = GREEN + '#' + RESET
+            else: c = '.'
 
-            print(c, end='')
+            print(c + ' ', end='')
         print() # print newline
 
-if __name__ == '__main__':
-    if len(argv) > 1 and argv[1].isdigit():
-        
-        print('Using %s%% obstacle chance.' % argv[1])
+def parse_graph_file(fname, width, height):
+    nodes = {} 
+    x = y = 0
 
-        # change from percent
-        obstacle_chance = float(argv[1]) / 100
+    with open(fname) as f:
+        while True:
+            c = f.read(1)
+
+            if not c:
+                return gh.PredefinedGraph(width, height, nodes)
+
+            current = (x, y)
+
+            if c == '\n':
+                y += 1
+                x = 0
+            else:
+                x += 1
+
+            if c == '=': nodes[current] = -1
+            if c.isdigit(): nodes[current] = int(c)
+
+if __name__ == '__main__':
+    width = height = 32
+    PREDEF_GRAPH_DIR = 'predef_graphs'
+
+    if len(argv) > 1:
+        fname = PREDEF_GRAPH_DIR + os.sep + argv[1]
+        if argv[1].isdigit():
+
+            # change from percent
+            graph = gh.RandomObstacleGraph(width, height, float(argv[1]) / 100)
+            print('Using %s%% obstacle chance.' % argv[1])
+
+        elif os.path.isfile(fname):
+
+            graph = parse_graph_file(fname, width, height)
+            print('Using graph file "%s".' % fname)
+
+        else:
+            print('Graph file "%s" not found.' % fname)
+            exit(1)
     else:
         print('Defaulting to 20% obstacle chance.')
-        obstacle_chance = 0.2
-
-    graph = gh.RandomObstacleGraph(32, 32, obstacle_chance)
+        graph = gh.RandomObstacleGraph(width, height, 0.2)
 
     start = (0, 0)  # upper left corner
     goal = (31, 31) # lower right corner
@@ -87,5 +126,8 @@ if __name__ == '__main__':
         print_graph(path, graph)
     else:
         print('No path was found.')
+        exit(1)
 
     print('Finished in %fs.' % (time() - last_time))
+
+    exit(0)
