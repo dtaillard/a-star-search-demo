@@ -7,20 +7,6 @@ from math import inf
 from sys import argv
 from time import time
 
-def heuristic(node, goal):
-    (x1, y1) = node
-    (x2, y2) = goal
-    
-    dx = abs(x1 - x2)
-    dy = abs(y1 - y2)
-
-    # Chebychev distance
-    D = 1
-    D2 = 1
-    return D * (dx + dy) + (D2 - 2 * D) * min(dx, dy)
-    # Manhattan distance
-    #return abs(x1 - x2) + abs(y1 - y2)
-
 def a_star_search(start, goal, graph):
     frontier = []
     came_from = {}
@@ -46,7 +32,7 @@ def a_star_search(start, goal, graph):
             if new_cost < cost.get(neighbor, inf) and not graph.is_obstacle(neighbor):
                 cost[neighbor] = new_cost
                 came_from[neighbor] = current
-                priority = new_cost + heuristic(neighbor, goal)
+                priority = new_cost + graph.heuristic(neighbor, goal)
 
                 heappush(frontier, (priority, neighbor))
     return None

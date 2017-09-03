@@ -22,7 +22,22 @@ class Graph(ABC):
         (x, y) = node
         result = [(x - 1, y), (x + 1, y), (x, y - 1), (x, y + 1), \
                 (x - 1, y - 1), (x + 1, y + 1), (x + 1, y - 1), (x - 1, y + 1)]
+
         return filter(self.exists_node, result)
+
+    def heuristic(self, node, goal):
+        (x1, y1) = node
+        (x2, y2) = goal
+    
+        # Manhattan distance
+        #return abs(x1 - x2) + abs(y1 - y2)
+
+        # Chebychev distance
+        dx = abs(x1 - x2)
+        dy = abs(y1 - y2)
+
+        D = D2 = 1
+        return D * (dx + dy) + (D2 - 2 * D) * min(dx, dy)
 
 class RandomObstacleGraph(Graph):
     def __init__(self, width, height, obstacle_chance):
