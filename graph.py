@@ -53,7 +53,7 @@ class RandomObstacleGraph(Graph):
     def is_obstacle(self, node):
         return node in self.obstacles
 
-    def cost_to(self, from_node, to_node):
+    def cost_to(self, node):
         return 1 # all nodes in this Graph class have a weight of 1
 
 class PredefinedGraph(Graph):
