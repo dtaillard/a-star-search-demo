@@ -4,7 +4,7 @@
 
 This project is a simple demonstration of the A* search algorithm implemented in Python 3.4. The A* search algorithm is an extension of Dijkstra's algorithm that adds a heuristic function to prioritize the visiting of nodes that are in the general direction of the goal. It is commonly used to implement path finding in games.
 
-#### How the algorithm works
+### How the algorithm works
 
 The A* search algorithm represents each location that can be traveled to and from as a **node**. 
 Nodes can point to any number of other nodes, known as **neighbors**.  A network of nodes collectively forms a graph. 
@@ -22,7 +22,7 @@ Finally, the neighboring node is assigned its priority and cost and is added to 
 An important note is that neighbor nodes are only added to the frontier if they either haven't already been evaluated or the new calculated cost is lower than the previously assigned cost.
 In addition to cost and priority, the parent node of each evaluated node is also stored. This is used to reconstruct the path once the current node is equal to the goal node.
 
-#### Writing custom graphs
+### Writing custom graphs
 
 It is possible to create custom graphs to be used in this demo. Edit the template file: `predef_graphs/template`. Nodes with a weight of 1 are represented with a period (`.`); nodes with a different weight can be represented as a single digit number (`1-9`); obstacles which cannot be passed through are equal-signs (`=`). Ensure that there are no additional new-lines or spaces before saving the file.
  
